@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGCSE ICT - RFID & OMR Quiz (30 MCQs)</title>
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #131d31;
+            --border-color: #223354;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        header h1 {
+            color: var(--accent);
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .quiz-status {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .score-pill {
+            background-color: #0c4a6e;
+            color: #7dd3fc;
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #0284c7;
+        }
+
+        .card {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            background-color: #1e293b;
+            color: var(--text-main);
+            padding: 1rem 1.25rem;
+            border-radius: 0.85rem;
+            border: 1px solid #334155;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #283548;
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-btn.correct {
+            background-color: #064e3b !important;
+            border-color: #059669 !important;
+            color: #ecfdf5 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #7f1d1d !important;
+            border-color: #dc2626 !important;
+            color: #fee2e2 !important;
+        }
+
+        .feedback-box {
+            padding: 1.15rem;
+            border-radius: 0.85rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .feedback-box.correct-feedback {
+            background-color: #022c22;
+            border: 1px solid #047857;
+            color: #a7f3d0;
+        }
+
+        .feedback-box.incorrect-feedback {
+            background-color: #450a0a;
+            border: 1px solid #b91c1c;
+            color: #fecdd3;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 0.85rem 1.75rem;
+            border-radius: 0.85rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .results-card h2 {
+            font-size: 2.25rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .results-card p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>IGCSE ICT Practice Quiz</h1>
+        <p>Topics 2.2.2 RFID Readers & 2.2.3 Optical Mark Recognition (OMR)</p>
+    </header>
+
+    <main>
+        <div class="quiz-status">
+            <span id="question-counter">Question 1 of 30</span>
+            <span id="score-display" class="score-pill">Score: 0</span>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="card">
+            <div id="question-box" class="question-text">
+                Loading question...
+            </div>
+
+            <div id="options-container" class="options-list">
+                <!-- Options populated dynamically -->
+            </div>
+
+            <div id="feedback-box" class="feedback-box hidden">
+                <!-- Feedback populated dynamically -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button id="next-btn" onclick="nextQuestion()" class="btn-primary hidden">Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results-container" class="card results-card hidden">
+            <h2>Quiz Completed! 🎉</h2>
+            <p id="final-score">You scored X out of 30</p>
+            <button onclick="restartQuiz()" class="btn-primary">Restart Quiz</button>
+        </div>
+    </main>
+
+    <footer>
+        IGCSE ICT Revision &bull; Direct Data Entry (RFID & OMR)
+    </footer>
+
+    <script>
+        const questions = [
+            // RFID Questions (1 to 15)
+            {
+                question: "What does the acronym RFID stand for in computer science and ICT?",
+                options: [
+                    { text: "Radio Frequency Identification", isCorrect: true, rationale: "RFID stands for Radio Frequency Identification, using radio waves to read data from tags." },
+                    { text: "Remote File Integration Device", isCorrect: false, rationale: "This is incorrect terminology." },
+                    { text: "Rapid Fingerprint Inspection Data", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Resistive Frequency Internal Decoder", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "What are the two primary hardware components that make up an RFID system?",
+                options: [
+                    { text: "An RFID reader (transceiver/antenna) and an RFID tag (microchip and antenna)", isCorrect: true, rationale: "An RFID setup consists of a reader broadcasting radio signals and a tag containing stored data." },
+                    { text: "An ADC converter and a DAC speaker amplifier", isCorrect: false, rationale: "These are audio/sensor converters." },
+                    { text: "A compiler and a linker", isCorrect: false, rationale: "These are programming software tools." },
+                    { text: "A flatbed scanner and an OCR software suite", isCorrect: false, rationale: "These are document scanning tools." }
+                ]
+            },
+            {
+                question: "How does an RFID reader communicate with an RFID tag?",
+                options: [
+                    { text: "Using radio frequency electromagnetic waves to transmit data wirelessly without requiring line-of-sight", isCorrect: true, rationale: "RFID readers emit radio waves that energize tags, causing them to transmit their stored identification data back." },
+                    { text: "Using visible red laser beams reflecting off microscopic pits", isCorrect: false, rationale: "This is optical disc technology." },
+                    { text: "Using physical magnetic read heads touching a metal strip", isCorrect: false, rationale: "This is magnetic stripe technology." },
+                    { text: "Using infrared light beams that require direct line-of-sight", isCorrect: false, rationale: "IR requires line-of-sight, whereas RFID works wirelessly through obstacles." }
+                ]
+            },
+            {
+                question: "What is the key functional difference between a passive RFID tag and an active RFID tag?",
+                options: [
+                    { text: "Passive tags have no internal battery and draw power from the reader's radio signal, whereas active tags have an internal battery and broadcast signals over greater distances", isCorrect: true, rationale: "Active tags contain batteries for long-range transmission; passive tags rely entirely on reader-induced power for short ranges." },
+                    { text: "Passive tags are volatile, whereas active tags are non-volatile.", isCorrect: false, rationale: "Volatility refers to RAM memory, not RFID tags." },
+                    { text: "Passive tags use optical laser disks, whereas active tags use magnetic tape.", isCorrect: false, rationale: "Both are radio frequency devices." },
+                    { text: "Active tags can only be read once, whereas passive tags can be rewritten infinitely.", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "What is a major advantage of RFID technology over traditional barcode scanning?",
+                options: [
+                    { text: "RFID tags can be read automatically from a distance without line-of-sight, and multiple tags can be read simultaneously", isCorrect: true, rationale: "RFID does not require line-of-sight and can read many items at once (bulk scanning), unlike barcodes." },
+                    { text: "RFID tags cost less than one-tenth of a cent to print on paper labels", isCorrect: false, rationale: "Barcodes printed on paper are significantly cheaper than electronic RFID microchip tags." },
+                    { text: "RFID tags never require any radio frequency signals", isCorrect: false, rationale: "RFID relies entirely on radio frequencies." },
+                    { text: "RFID tags can store full-length feature films in high definition", isCorrect: false, rationale: "Storage capacity on standard RFID tags is small." }
+                ]
+            },
+            {
+                question: "Where are RFID tags and readers commonly used in modern logistics and retail inventory management?",
+                options: [
+                    { text: "Tracking stock levels in warehouses, retail item tagging, toll road electronic passes, and livestock tracking", isCorrect: true, rationale: "RFID is widely used for tracking items, vehicles, livestock, and inventory automatically." },
+                    { text: "Controlling industrial car manufacturing welding robots", isCorrect: false, rationale: "Factory robots use automated controller programs." },
+                    { text: "Displaying desktop operating system windows", isCorrect: false, rationale: "Displays use monitors and GUIs." },
+                    { text: "Measuring greenhouse ambient air temperature", isCorrect: false, rationale: "Temperature uses sensors." }
+                ]
+            },
+            {
+                question: "How is RFID utilized in livestock tracking (such as tagging cattle or sheep)?",
+                options: [
+                    { text: "An RFID microchip tag is placed inside or attached to the animal's ear, allowing farmers to scan and identify each animal instantly", isCorrect: true, rationale: "Ear tags containing RFID chips let farmers track individual animal medical history, movement, and ownership." },
+                    { text: "Animals are forced to manually type their ID numbers into a QWERTY keyboard", isCorrect: false, rationale: "Animals cannot type on keyboards." },
+                    { text: "Animals are scanned using optical OMR multi-choice bubble sheets", isCorrect: false, rationale: "OMR is for paper answer sheets." },
+                    { text: "Animals are tracked by printing barcodes on their fur using inkjets", isCorrect: false, rationale: "Fur barcodes would smudge and fall off." }
+                ]
+            },
+            {
+                question: "How does RFID technology operate in electronic toll collection systems (like electronic highway passes)?",
+                options: [
+                    { text: "An RFID tag mounted on the vehicle's windshield is scanned automatically by overhead readers as the car passes through the toll booth without stopping", isCorrect: true, rationale: "Overhead radio readers detect vehicle tags instantly, deducting tolls automatically without requiring drivers to stop." },
+                    { text: "Drivers must insert magnetic credit cards into roadside slot machines manually", isCorrect: false, rationale: "Electronic toll systems do not require stopping to insert cards." },
+                    { text: "Drivers type their passport numbers into an ATM keypad while driving", isCorrect: false, rationale: "This would be dangerous and impractical." },
+                    { text: "Roads use OMR paper forms dropped into coin buckets", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "What is a security disadvantage or concern associated with RFID technology?",
+                options: [
+                    { text: "RFID data can potentially be intercepted or scanned surreptitiously by unauthorized readers if encryption is inadequate", isCorrect: true, rationale: "Because radio waves travel through the air, unsecured RFID tags can be read remotely by rogue scanners." },
+                    { text: "RFID tags require heavy diesel generators to transmit radio signals", isCorrect: false, rationale: "Tags draw tiny amounts of power." },
+                    { text: "RFID tags melt when exposed to room temperature air", isCorrect: false, rationale: "Tags are durable." },
+                    { text: "RFID tags take 30 minutes to initialize before scanning", isCorrect: false, rationale: "RFID scanning happens in milliseconds." }
+                ]
+            },
+            {
+                question: "What is a major disadvantage of RFID systems compared to traditional printed barcodes?",
+                options: [
+                    { text: "RFID tags and readers are significantly more expensive to implement than simple printed paper barcodes", isCorrect: true, rationale: "Microchip RFID tags cost more than printing ink barcodes on packaging." },
+                    { text: "RFID tags require direct line-of-sight to be read at all times", isCorrect: false, rationale: "RFID does not require line-of-sight." },
+                    { text: "RFID tags can only be read one single item at a time", isCorrect: false, rationale: "RFID supports bulk simultaneous scanning." },
+                    { text: "RFID tags contain no electronic circuitry", isCorrect: false, rationale: "RFID tags contain microchips and antennas." }
+                ]
+            },
+            {
+                question: "In a clothing retail store, how does the use of RFID inventory tagging improve stock control compared to barcodes?",
+                options: [
+                    { text: "Staff can scan an entire box of clothes instantly with a handheld reader without opening the box or seeing individual tags", isCorrect: true, rationale: "Bulk RFID scanning lets staff check entire inventory crates in seconds without line-of-sight." },
+                    { text: "Clothes automatically wash themselves when scanned", isCorrect: false, rationale: "RFID has nothing to do with washing." },
+                    { text: "Customers are required to type their shoe sizes into a computer database", isCorrect: false, rationale: "This is manual entry." },
+                    { text: "Barcodes are completely banned by international retail law", isCorrect: false, rationale: "Barcodes are still widely used." }
+                ]
+            },
+            {
+                question: "What type of power source do active RFID tags rely on to transmit signals over long distances?",
+                options: [
+                    { text: "An internal battery built into the tag itself", isCorrect: true, rationale: "Active tags have their own internal battery power source to broadcast radio signals proactively." },
+                    { text: "Solar panels exposed to direct moonlight", isCorrect: false, rationale: "Moonlight is insufficient." },
+                    { text: "Wired copper Ethernet cables plugged into wall outlets", isCorrect: false, rationale: "Active tags are wireless." },
+                    { text: "Magnetic induction from car tires spinning", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "Why do passive RFID tags not require an internal battery?",
+                options: [
+                    { text: "They derive all the electrical power they need from the electromagnetic radio waves emitted by the RFID reader", isCorrect: true, rationale: "The reader's radio signal induces a tiny electrical current in the passive tag's antenna, powering its microchip to reply." },
+                    { text: "They run on kinetic energy generated by human breathing", isCorrect: false, rationale: "This is false." },
+                    { text: "They store solar energy inside glass vacuum tubes", isCorrect: false, rationale: "This is false." },
+                    { text: "They do not require any electrical power whatsoever to operate", isCorrect: false, rationale: "The microchip still requires electricity, which comes from the reader's signal." }
+                ]
+            },
+            {
+                question: "Which frequency range category describes standard RFID systems used in security access control and library book tracking?",
+                options: [
+                    { text: "Low Frequency (LF) or High Frequency (HF) / NFC", isCorrect: true, rationale: "Library books and access cards typically use LF or HF RFID/NFC tags for close-range scanning." },
+                    { text: "Ultra-High Voltage nuclear gamma rays", isCorrect: false, rationale: "Gamma rays are ionizing radiation, not RFID." },
+                    { text: "Audio frequency speaker sound waves", isCorrect: false, rationale: "RFID uses radio waves, not sound." },
+                    { text: "Ultraviolet laser light beams", isCorrect: false, rationale: "RFID uses radio frequencies." }
+                ]
+            },
+            {
+                question: "Which of the following best summarizes the main function of an RFID reader?",
+                options: [
+                    { text: "To transmit radio waves to activate RFID tags and receive, decode, and forward the tag's stored data to a computer system", isCorrect: true, rationale: "The reader bridges wireless radio tags with digital computer databases." },
+                    { text: "To print paper barcoded labels onto cardboard boxes", isCorrect: false, rationale: "Printing is done by barcode printers." },
+                    { text: "To scan optical OMR bubble answer sheets with a light sensor", isCorrect: false, rationale: "This describes OMR readers." },
+                    { text: "To convert analogue audio microphone signals into digital binary data", isCorrect: false, rationale: "This is an ADC." }
+                ]
+            },
+
+            // OMR Questions (16 to 30)
+            {
+                question: "What does the acronym OMR stand for in computer data entry?",
+                options: [
+                    { text: "Optical Mark Recognition (or Optical Mark Reader)", isCorrect: true, rationale: "OMR stands for Optical Mark Recognition, used to read shaded pencil marks on paper forms." },
+                    { text: "Online Magnetic Registration", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Optical Machine Resolution", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Original Monochromatic Renderer", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "How does an Optical Mark Recognition (OMR) system detect and read user responses on a paper form?",
+                options: [
+                    { text: "By shining a light beam onto the paper and measuring the reflection; shaded pencil marks reflect less light than blank paper", isCorrect: true, rationale: "OMR detectors sense lower light reflection where dark pencil graphite fills in designated bubbles or boxes." },
+                    { text: "By using magnetic read heads to feel metal particles embedded in ink", isCorrect: false, rationale: "This describes magnetic stripe or MICR reading." },
+                    { text: "By receiving wireless radio frequency signals from microchips inside the paper", isCorrect: false, rationale: "This is RFID." },
+                    { text: "By translating character shapes into editable words using OCR software", isCorrect: false, rationale: "This describes OCR, not OMR." }
+                ]
+            },
+            {
+                question: "What is a classic, real-world application of OMR technology?",
+                options: [
+                    { text: "Marking multiple-choice examination answer sheets, lottery tickets, and customer survey questionnaires", isCorrect: true, rationale: "OMR is widely used for automated multiple-choice exam scoring and lottery drawing slips." },
+                    { text: "Printing architectural blueprints onto large paper rolls", isCorrect: false, rationale: "Blueprints are printed by plotters." },
+                    { text: "Swiping hotel room key cards at doorway locks", isCorrect: false, rationale: "Hotel keys use magnetic stripes or RFID." },
+                    { text: "Recording continuous temperature readings in a greenhouse", isCorrect: false, rationale: "Greenhouses use environmental sensors." }
+                ]
+            },
+            {
+                question: "What is a major advantage of using OMR for processing multiple-choice school exams?",
+                options: [
+                    { text: "Extremely high processing speed and accuracy compared to manual human teacher grading", isCorrect: true, rationale: "OMR can process thousands of exam papers per hour accurately without human fatigue or marking errors." },
+                    { text: "It allows students to write long, detailed paragraph essays instead of shading bubbles", isCorrect: false, rationale: "OMR only reads shaded marks, not handwritten essays." },
+                    { text: "It completely eliminates the need for paper answer sheets", isCorrect: false, rationale: "OMR requires specially formatted paper forms." },
+                    { text: "It allows wireless Bluetooth streaming to student smartphones", isCorrect: false, rationale: "OMR is a physical paper scanning process." }
+                ]
+            },
+            {
+                question: "What is a major disadvantage or limitation of OMR forms?",
+                options: [
+                    { text: "Forms must be precisely filled out (e.g., shading bubbles completely with HB pencil) and carefully aligned; stray marks or crumpled forms can cause reading errors", isCorrect: true, rationale: "OMR requires strict form alignment and correct pencil shading; folding or stray marks lead to rejection or misreading." },
+                    { text: "OMR readers require built-in nuclear battery power packs to operate", isCorrect: false, rationale: "OMR machines plug into standard mains power." },
+                    { text: "OMR forms cannot be printed on paper media", isCorrect: false, rationale: "OMR forms are printed on specialized paper." },
+                    { text: "OMR technology can only process one single form per calendar year", isCorrect: false, rationale: "OMR processes thousands of forms rapidly." }
+                ]
+            },
+            {
+                question: "Why must OMR forms be printed with precise alignment marks (timing tracks/registration marks)?",
+                options: [
+                    { text: "To allow the OMR scanner to calibrate its grid coordinates and ensure it reads each response box in the correct position", isCorrect: true, rationale: "Alignment marks guide the optical scanner to map exact bubble coordinates accurately across the page." },
+                    { text: "To make the paper smell pleasant for students taking exams", isCorrect: false, rationale: "Alignment marks have no scent." },
+                    { text: "To encrypt the exam paper using quantum cryptography", isCorrect: false, rationale: "Alignment marks are visual reference lines." },
+                    { text: "To prevent the paper from catching fire inside the scanner", isCorrect: false, rationale: "This is false." }
+                ]
+            },
+            {
+                question: "What happens if a student shades an OMR bubble too lightly or uses an incorrect pen color (like red ink instead of dark pencil)?",
+                options: [
+                    { text: "The OMR scanner may fail to detect the mark, resulting in an unanswered or incorrect question grade", isCorrect: true, rationale: "OMR sensors look for a specific drop in light reflection; faint marks or non-readable ink colors are missed." },
+                    { text: "The OMR machine automatically awards full bonus marks to the student", isCorrect: false, rationale: "The scanner simply records no mark." },
+                    { text: "The computer system prints out a warning certificate", isCorrect: false, rationale: "This does not occur." },
+                    { text: "The paper form transforms into a digital holographic 3D model", isCorrect: false, rationale: "This is sci-fi fiction." }
+                ]
+            },
+            {
+                question: "How does OMR differ from OCR (Optical Character Recognition)?",
+                options: [
+                    { text: "OMR reads the position of shaded marks (bubbles/boxes), whereas OCR recognizes and translates printed or handwritten character shapes into editable text", isCorrect: true, rationale: "OMR only detects where marks are shaded on a grid, while OCR analyzes letter and number shapes." },
+                    { text: "OMR uses radio waves, while OCR uses magnetic tape heads", isCorrect: false, rationale: "Both are optical technologies, but OMR reads marks and OCR reads text characters." },
+                    { text: "OMR is used for audio recordings, while OCR is used for video files", isCorrect: false, rationale: "Both process static documents." },
+                    { text: "There is no difference; they are identical technologies", isCorrect: false, rationale: "They serve completely different document processing tasks." }
+                ]
+            },
+            {
+                question: "Why are HB pencils usually specified for filling in OMR answer sheets?",
+                options: [
+                    { text: "HB graphite pencils provide the correct darkness and density of carbon required to reflect light poorly, ensuring reliable scanner detection", isCorrect: true, rationale: "Graphite from HB pencils creates a dark, opaque mark that reliably drops light reflection for OMR sensors." },
+                    { text: "HB pencils contain radioactive isotopes that light up scanner screens", isCorrect: false, rationale: "Pencils are non-radioactive." },
+                    { text: "HB pencils can be erased easily by the OMR scanner's internal laser eraser", isCorrect: false, rationale: "Scanners do not erase marks." },
+                    { text: "HB pencils are the only pencils legally manufactured on Earth", isCorrect: false, rationale: "Many pencil grades exist." }
+                ]
+            },
+            {
+                question: "In what scenario would OMR be preferred over keyboard data entry?",
+                options: [
+                    { text: "When gathering survey feedback or exam results from thousands of participants quickly without paying data-entry operators to type responses", isCorrect: true, rationale: "OMR automates mass form processing instantly, saving immense labor time and typing costs compared to manual entry." },
+                    { text: "When writing a 500-page academic thesis with custom paragraph formatting", isCorrect: false, rationale: "Theses require keyboards and word processors." },
+                    { text: "When browsing e-commerce shopping websites on a smartphone", isCorrect: false, rationale: "Web browsing requires touchscreens and browsers." },
+                    { text: "When playing high-speed 3D flight simulation games", isCorrect: false, rationale: "Games require joysticks or keyboards." }
+                ]
+            },
+            {
+                question: "What is a limitation of OMR regarding the type of data it can capture?",
+                options: [
+                    { text: "It can only capture predefined categorical choices (like selecting A, B, C, or D), not complex descriptive text or opinions", isCorrect: true, rationale: "OMR is strictly limited to reading predetermined shaded marks on a template grid." },
+                    { text: "It can capture high-definition streaming video files", isCorrect: false, rationale: "OMR processes flat paper forms only." },
+                    { text: "It can record live musical voice performances", isCorrect: false, rationale: "Audio recording requires microphones." },
+                    { text: "It can measure room temperature accurately", isCorrect: false, rationale: "Temperature is measured by sensors." }
+                ]
+            },
+            {
+                question: "How do lottery organizations utilize OMR technology during ticket processing?",
+                options: [
+                    { text: "Players shade numbers on a paper play slip, which is scanned via OMR at retail terminals to register their chosen lottery numbers", isCorrect: true, rationale: "OMR scans players' marked number selections on paper betting slips instantly." },
+                    { text: "Players speak their winning numbers into a microphone connected to an OMR reader", isCorrect: false, rationale: "Voice uses speech recognition." },
+                    { text: "Lottery tickets are printed with active RFID microchips that explode after the draw", isCorrect: false, rationale: "This is incorrect." },
+                    { text: "Lottery machines use magnetic stripe cards swiped on paper", isCorrect: false, rationale: "This is incorrect." }
+                ]
+            },
+            {
+                question: "What happens if an OMR form gets crumpled, folded, or stained with coffee before being scanned?",
+                options: [
+                    { text: "The paper may jam inside the scanner transport mechanism or cause reading errors due to distorted mark alignment", isCorrect: true, rationale: "Damaged or stained paper disrupts light reflection and alignment tracks, often jamming the machine or causing rejected forms." },
+                    { text: "The OMR scanner automatically repairs the paper using laser welding", isCorrect: false, rationale: "Scanners cannot repair physical paper damage." },
+                    { text: "The form's data values double automatically", isCorrect: false, rationale: "This does not happen." },
+                    { text: "The computer screen turns off permanently", isCorrect: false, rationale: "This is false." }
+                ]
+            },
+            {
+                question: "Which input device category does an OMR scanner belong to?",
+                options: [
+                    { text: "Direct Data Entry (DDE) devices", isCorrect: true, rationale: "OMR is a direct data entry scanning device that captures paper responses without manual keyboard typing." },
+                    { text: "Manual text entry keyboards", isCorrect: false, rationale: "OMR does not use manual typing." },
+                    { text: "Soft-copy visual output display units", isCorrect: false, rationale: "OMR is an input device, not an output display." },
+                    { text: "Sequential backing storage magnetic tape drives", isCorrect: false, rationale: "This is storage, not input." }
+                ]
+            },
+            {
+                question: "Which of the following best summarizes the overall comparison between RFID and OMR in IGCSE ICT?",
+                options: [
+                    { text: "RFID is a wireless radio frequency identification technology used for real-time tracking and contactless transactions, whereas OMR is an optical paper-scanning technology used to read pre-printed shaded marks", isCorrect: true, rationale: "RFID handles wireless radio tags and tracking, while OMR processes physical shaded paper forms optically." },
+                    { text: "RFID and OMR are identical technologies used exclusively for printing exam question papers", isCorrect: false, rationale: "They are completely different input technologies." },
+                    { text: "Both RFID and OMR require students to fill in bubble sheets with HB pencils", isCorrect: false, rationale: "Only OMR uses pencil bubble sheets." },
+                    { text: "Neither technology is part of the IGCSE ICT syllabus", isCorrect: false, rationale: "Both 2.2.2 RFID and 2.2.3 OMR are core syllabus topics." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreDisplay = document.getElementById("score-display");
+        const questionBox = document.getElementById("question-box");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackBox = document.getElementById("feedback-box");
+        const nextBtn = document.getElementById("next-btn");
+        const quizContainer = document.getElementById("quiz-container");
+        const resultsContainer = document.getElementById("results-container");
+        const finalScore = document.getElementById("final-score");
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.classList.add("hidden");
+            nextBtn.classList.add("hidden");
+
+            const q = questions[currentQuestionIndex];
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            scoreDisplay.textContent = `Score: ${score}`;
+            questionBox.textContent = q.question;
+
+            optionsContainer.innerHTML = "";
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.textContent = opt.text;
+                btn.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const q = questions[currentQuestionIndex];
+            const allOptionButtons = optionsContainer.children;
+
+            q.options.forEach((opt, idx) => {
+                allOptionButtons[idx].disabled = true;
+                if (opt.isCorrect) {
+                    allOptionButtons[idx].classList.add("correct");
+                } else if (idx === selectedIndex) {
+                    allOptionButtons[idx].classList.add("incorrect");
+                }
+            });
+
+            const selectedOpt = q.options[selectedIndex];
+            feedbackBox.classList.remove("hidden");
+            if (selectedOpt.isCorrect) {
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                feedbackBox.className = "feedback-box correct-feedback";
+                feedbackBox.innerHTML = `<strong>Correct!</strong> ${selectedOpt.rationale}`;
+            } else {
+                feedbackBox.className = "feedback-box incorrect-feedback";
+                feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${selectedOpt.rationale}`;
+            }
+
+            if (currentQuestionIndex < questions.length - 1) {
+                nextBtn.textContent = "Next Question";
+            } else {
+                nextBtn.textContent = "View Results";
+            }
+            nextBtn.classList.remove("hidden");
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                quizContainer.classList.add("hidden");
+                resultsContainer.classList.remove("hidden");
+                finalScore.textContent = `You scored ${score} out of ${questions.length}`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsContainer.classList.add("hidden");
+            quizContainer.classList.remove("hidden");
+            loadQuestion();
+        }
+
+        // Initialize quiz on load
+        loadQuestion();
+    </script>
+</body>
+</html>
